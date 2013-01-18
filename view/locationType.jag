@@ -1,0 +1,14 @@
+<%
+include("../controller/locationType.jag");
+var ltype = request.getParameter("ltype");
+var name = request.getParameter("name");
+if(ltype == null && name == null){
+
+getAllLocationTypes();
+} else if(ltype != null && name != null)
+{
+	listHospitals(ltype,name);
+	
+}
+%>
+

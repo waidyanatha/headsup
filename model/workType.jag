@@ -1,0 +1,10 @@
+<%
+include("dbinit.jag");
+var log = new Log();
+log.info('Work type Model init');
+	var workTypes = db.query("SELECT pt.prsn_type FROM msc_prsn_type pt WHERE pt.deactivate_dt IS NULL AND pt.prsn_role='healthcare worker';");
+//print(workTypes);
+
+
+
+%>

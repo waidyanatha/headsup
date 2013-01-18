@@ -1,0 +1,40 @@
+<%
+
+
+include("../model/locationtype.jag");
+function getAllLocationTypes(){
+	var localTypes = db.query("SELECT l.loc_type FROM msc_loc_type l WHERE l.deactivate_dt IS NULL ORDER BY l.loc_type;");
+	var location_array = [];
+for(var i in localTypes) {
+	
+	
+    if(localTypes.hasOwnProperty(i) && !isNaN(+i)) {
+    //	log.info('localTypes init'+i);
+    //	log.info('localTypes init'+localTypes.hasOwnProperty(i));
+    	log.info(localTypes[i].loc_type);
+        location_array[+i] = localTypes[i].loc_type;
+    }
+}
+print(location_array);
+}
+
+function listHospitals(ltype,name){
+log.info('LocationType init');
+var hospitals = db.query("SELECT l.loc_uuid, f.fclty_uuid, f.fclty_desc FROM msc_location l INNER JOIN msc_facility f USING (loc_uuid) WHERE l.deactivate_dt IS NULL AND f.deactivate_dt IS NULL AND l.loc_prnt_uuid IN (SELECT loc_uuid FROM msc_location WHERE deactivate_dt IS NULL AND loc_type='"+ltype+"' AND loc_name like '"+name+"%');");
+	var hospitals_array = [];
+for(var i in hospitals) {
+	
+	
+    if(hospitals.hasOwnProperty(i) && !isNaN(+i)) {
+    //	log.info('localTypes init'+i);
+    //	log.info('localTypes init'+localTypes.hasOwnProperty(i));
+    	log.info(hospitals[i].fclty_desc);
+        hospitals_array[+i] = hospitals[i].fclty_desc;
+    }
+}
+print(hospitals_array);
+}
+
+
+%>
+

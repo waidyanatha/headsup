@@ -1,0 +1,12 @@
+<%
+include("../model/dbinit.jag");
+var log = new Log();
+
+var query = "SELECT f.fclty_desc AS facility, DATE(fial.audit_dt) AS adate, ic.item_name AS item, ic.item_desc AS description, fial.item_qnty AS quantity, ic.item_unit AS unit FROM msc_item_clog ic INNER JOIN msc_fclty_item_audit_log fial USING (item_uuid) INNER JOIN msc_facility f USING (fclty_uuid) INNER JOIN msc_location l USING (loc_uuid) WHERE fial.deactivate_dt IS NULL AND ic.item_type='drugs' GROUP BY facility ORDER BY adate ASC;";
+log.info('drug counts Model init');
+	var drugCount = db.query(query);
+
+print(drugCount);
+
+
+%>

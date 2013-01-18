@@ -1,0 +1,55 @@
+<%
+include("../model/disease.jag");
+
+
+function listDiseases(min){
+	var qury = "SELECT d.dis_priority, d.disease FROM msc_disease d WHERE d.deactivate_dt IS NULL ORDER BY d.dis_priority, d.disease;";
+	var listAllDiseases = db.query(qury);
+	
+var diseases_array = [];
+for(var i in listAllDiseases) {
+    if(listAllDiseases.hasOwnProperty(i) && !isNaN(+i)) {
+    	if(!min){
+        diseases_array[+i] = listAllDiseases[i];
+       }else{
+       	diseases_array[+i] = listAllDiseases[i].dis_priority+"-"+listAllDiseases[i].disease;
+       }
+    }
+}
+print(diseases_array);
+}
+
+function listSymptom(min){
+	var qury = "SELECT d.disease, s.symptom FROM msc_disease d INNER JOIN msc_dis_symp ds USING (disease) INNER JOIN msc_symptom s USING (symptom) WHERE d.deactivate_dt IS NULL AND s.deactivate_dt IS NULL AND ds.deactivate_dt IS NULL ORDER BY d.disease, s.symptom;";
+		var listAllSymptom = db.query(qury);
+	
+var symptom_array = [];
+for(var i in listAllSymptom) {
+    if(listAllSymptom.hasOwnProperty(i) && !isNaN(+i)) {
+    	if(!min){
+        symptom_array[+i] = listAllSymptom[i];
+       }else{
+       	symptom_array[+i] = listAllSymptom[i].disease+"-"+listAllSymptom[i].symptom;
+       }
+    }
+}
+print(symptom_array);
+}
+
+function listSign(min){
+	var qury = "SELECT d.disease, s.sign FROM msc_disease d INNER JOIN msc_dis_sign ds USING (disease) INNER JOIN msc_sign s USING (sign) WHERE d.deactivate_dt IS NULL AND s.deactivate_dt IS NULL AND ds.deactivate_dt IS NULL ORDER BY d.disease, s.sign;";
+	var listAllSign = db.query(qury);
+	
+var sign_array = [];
+for(var i in listAllSign) {
+    if(listAllSign.hasOwnProperty(i) && !isNaN(+i)) {
+    	if(!min){
+        sign_array[+i] = listAllSign[i];
+       }else{
+       	sign_array[+i] = listAllSign[i].disease+"-"+listAllSign[i].sign;
+       }
+    }
+}
+print(sign_array);
+}
+%>

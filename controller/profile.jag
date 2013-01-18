@@ -1,0 +1,9 @@
+<%
+
+include("../model/profile.jag");
+include("tablemgt.jag");
+function nextID(){	
+print(getNextPK('msc_person'));
+}
+
+%>

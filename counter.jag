@@ -1,0 +1,44 @@
+<html> 
+  <head>        
+        <title>HeadsUp</title> 
+        <script src="js/jquery.min.js"></script> 
+        <script src="js/mustache.js"></script> 
+</head> 
+    <body>
+
+<table border="1" width="100%"  align="right">
+  <tr>
+    <th width="40%" align="left">disease counts<br><div id="sampleArea">
+   
+    </div> </th>
+    <th width="250%"align="left" >drug counts <br><div id="sampleArea2"></div> </th>
+  </tr>
+  </table>
+    
+   
+ <div id="sampleArea2"></div> 
+<script> 
+
+  $.getJSON('./view/diseasecounts.jag', function(data) { 
+  // var template = '<tr> {{#.}} <td>{{disease}} </td>'
+ //  +'<td>{{counts}} </td> <td>{{fclty_desc}} </td> {{/.}}</tr> sss';
+var template = '<ul> {{#.}} <li>{{disease}} is in {{fclty_desc}} - Count is {{counts}} </li> {{/.}} </ul>';
+
+    var html = Mustache.to_html(template, data); 
+    $('#sampleArea2').append(html);
+  });
+  
+  
+    $.getJSON('./view/drugcounts.jag', function(data) { 
+ //  var template = '<table><tr> {{#.}} <td>{{item_name}} </td>'
+ //  +'<td>{{item_qnty}} </td> <td>{{item_desc}} </td>  <br>{{/.}} </tr></table>';
+var template = '<ul> {{#.}} <li>{{item_name}} ({{item_desc}}) - Count is {{item_qnty}} </li> {{/.}} </ul>';
+
+    var html = Mustache.to_html(template, data); 
+    $('#sampleArea').html(html);
+  });
+</script>
+
+
+    </body>    
+</html>

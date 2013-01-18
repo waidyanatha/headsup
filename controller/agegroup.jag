@@ -1,0 +1,8 @@
+<%
+include("../model/dbinit.jag");
+var log = new Log();
+log.info('Age Group Model init');
+	var wards = db.query("select fo.option_description from msc_field_options fo where fo.field_name = 'opt_age_group';");
+
+
+%>

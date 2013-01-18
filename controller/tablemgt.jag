@@ -1,0 +1,19 @@
+<%
+
+function getNextPK(tableName){
+	var lastID = db.query("SELECT pk_id  FROM msc_table_mgt "
+	+"WHERE table_name ='"+tableName+"';");
+	var arr = lastID[0].pk_id.split("-");
+arr[1]=parseInt(arr[1])+1;
+var pkey = arr[0]+"-"+arr[1];
+return pkey;
+}
+
+function updatePK(tableName,nextPK){
+	var qury ="UPDATE  `msc_table_mgt` SET  `pk_id` =  '"+nextPK+"'"
+	+" WHERE  `msc_table_mgt`.`table_name` =  '"+tableName+"';";
+	var out = db.query(qury);
+	
+}
+
+%>

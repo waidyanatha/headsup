@@ -1,0 +1,19 @@
+<%
+include("dbinit.jag");
+var log = new Log();
+log.info('Wards Model init');
+	var wards = db.query("SELECT fo.option_description FROM msc_field_options fo WHERE fo.field_name='opt_ward_name';");
+
+
+
+	var ward_array = [];
+for(var i in wards) {
+	
+	
+    if(wards.hasOwnProperty(i) && !isNaN(+i)) {
+    	log.info(wards[i].option_description);
+        ward_array[+i] = wards[i].option_description;
+    }
+}
+print(ward_array);
+%>

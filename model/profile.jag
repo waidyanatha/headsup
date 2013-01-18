@@ -1,0 +1,66 @@
+<%
+include("dbinit.jag");
+include("utilsDate.jag");
+include("../controller/tablemgt.jag");
+
+var log = new Log();
+log.info('Profile Model init');
+function login(name, pass) {
+	log.info('login call' + name + pass);
+	var loguuid = db.query("SELECT user_p_uuid FROM  msc_auth_access WHERE uname =  '" + name + "' AND PASSWORD =  '" + pass + "';");
+	print(loguuid);
+}
+
+//SELECT p.deactivate_dt FROM msc_person p INNER JOIN msc_prsn_type pt USING (prsn_type) WHERE p.first_name='Padmini' AND p.last_name='Ranasingha' AND empl_id='T5656456' AND pt.prsn_type='Pharmacist';
+function isExisting(name, lastname, emlo_id, worktype) {
+	log.info('is exsiting call' + name + lastname + worktype);
+	var loguuid = db.query("SELECT p.deactivate_dt FROM msc_person p INNER JOIN msc_prsn_type pt USING (prsn_type) WHERE p.first_name='" + name + "' AND p.last_name='" + lastname + "' AND empl_id='" + emlo_id + "' AND pt.prsn_type='" + worktype + "';");
+	log.info(loguuid);
+	print(loguuid);
+}
+
+function getUserId(name) {
+	log.info('getUserId '+name);
+	var useruuid = db.query("SELECT user_p_uuid FROM  msc_auth_access WHERE uname =  '" + name + "';");
+	log.info(useruuid);
+	return useruuid[0].user_p_uuid;
+}
+function addPatient(name, gender, agegorup) {
+	//check exsting the patient
+	log.info('is exsiting patient check' + name + gender);
+	var pid = db.query("Select p_uuid FROM  `msc_person` WHERE `prsn_type`='patient' AND`gender`='" + gender + "' AND `msc_person`.`first_name`='" + name + "' LIMIT 1;");
+	//log.info('is exsiting patient pid'+pid[0].p_uuid);
+	log.info(pid);
+	log.info(pid.length);
+	if(pid.length == 0.0) {
+		log.info('add new patient' + name + gender);
+		var pkey = getNextPK('msc_person');
+		var newUseradding = db.query("INSERT INTO msc_person " + "(p_uuid, prsn_type, first_name, gender, age_grp ,create_dt, create_by, create_proc) " + "values ('" + pkey + "', 'patient',  '" + name + "', '" + gender + "', '" + agegorup + "','" + strDate + "', 'rl21212121','mscube j2me mobile app'); ");
+		updatePK('msc_person', pkey);
+	}
+}
+
+function lastID() {
+	log.info('last ID msc_person');
+	var lastID = db.query("SELECT p_uuid  FROM msc_person " + "ORDER BY create_dt DESC LIMIT 1;");
+	print(lastID);
+}
+
+function saveNewPerson(first_name, last_name, empl_id, type, mi_name, pass) {
+	log.info('new ID msc_person');
+
+	var pkey = getNextPK('msc_person');
+
+	//INSERT INTO msc_person (p_uuid, prsn_type, prsn_state, empl_id, last_name, first_name, mi_name, create_dt, create_by, create_proc) values ('rl21212121', 'Pharmacist', 'Intern', 'T5656456', 'Ranasingha', 'Padmini', NULL, '2012-09-23 22:30:00', 'user_padmini', 'mscube j2me mobile app');
+	var newUseradding = db.query("INSERT INTO msc_person " + "(p_uuid, prsn_type, prsn_state, empl_id, last_name, first_name, mi_name, create_dt, create_by, create_proc) " + "values ('" + pkey + "', '" + type + "', 'Intern', '" + empl_id + "', '" + last_name + "', '" + first_name + "', '" + mi_name + "', '" + strDate + "', 'user_" + first_name + "', 'mscube j2me mobile app'); ");
+
+	log.info(pkey + " : " + last_name + " is added to msc_person");
+	//INSERT INTO msc_auth_access (user_p_uuid, uname, password, create_dt, create_by, create_proc) values ('rl21212121', 'padmini', 'padminiranasinghe', '2012-09-23 22:30:00', 'user_padmini', 'mscube j2me mobile app');
+
+	var newuserAces = db.query("INSERT INTO msc_auth_access " + "(user_p_uuid, uname, password, create_dt, create_by, create_proc) " + "values ('" + pkey + "', '" + first_name + "', '" + pass + "', '" + strDate + "', 'user_" + first_name + "', 'mscube j2me mobile app');");
+	log.info(pkey + " is added to msc_auth_access");
+	updatePK('msc_person', pkey);
+	print(parse("[{\"task\":\"scuess\"}]"));
+}
+
+%>

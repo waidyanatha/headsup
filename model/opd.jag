@@ -1,0 +1,93 @@
+<%
+include("dbinit.jag");
+var log = new Log();
+log.info('OPD Model init');
+function login(name,pass){
+	log.info('login call'+name+pass);
+	var loguuid = db.query("SELECT user_p_uuid FROM  msc_auth_access WHERE uname =  '"+name+"' AND PASSWORD =  '"+pass+"';");
+print(loguuid);
+}
+
+//SELECT p.deactivate_dt FROM msc_person p INNER JOIN msc_prsn_type pt USING (prsn_type) WHERE p.first_name='Padmini' AND p.last_name='Ranasingha' AND empl_id='T5656456' AND pt.prsn_type='Pharmacist';
+function isExisting(name,lastname,emlo_id,worktype){
+	log.info('is exsiting call'+name+lastname+worktype);
+	var loguuid = db.query("SELECT p.deactivate_dt FROM msc_person p INNER JOIN msc_prsn_type pt USING (prsn_type) WHERE p.first_name='"+name+"' AND p.last_name='"+lastname+"' AND empl_id='"+emlo_id+"' AND pt.prsn_type='"+worktype+"';");
+	log.info(loguuid);
+print(loguuid);
+}
+
+function lastID(){
+	log.info('last ID msc_cases');
+	var lastID = db.query("SELECT pk_id  FROM msc_table_mgt "
+	+"WHERE table_name ='msc_cases';");
+print(lastID);
+}
+
+
+function saveNewPerson(first_name,last_name,empl_id,type,mi_name,pass){
+	log.info('last ID msc_person');
+	var lastID = db.query("SELECT p_uuid  FROM msc_person"
+	+" ORDER BY create_dt DESC LIMIT 1;");
+var arr = lastID[0].p_uuid.split("-");
+arr[1]=parseInt(arr[1])+1;
+var pkey = arr[0]+"-"+arr[1];
+var acesspkey = "rl-"+arr[1];
+
+//date 
+var d = new Date();
+ var year, month, day,hour,mins,sec;
+  year = String(d.getFullYear());
+        month = String(d.getMonth() + 1);
+        if (month.length == 1) {
+            month = "0" + month;
+        }
+        day = String(d.getDate());
+        if (day.length == 1) {
+            day = "0" + day;
+        }
+        hour = String(d.getHours());
+        if (hour.length == 1) {
+            hour = "0" + hour;
+        }
+                mins = String(d.getMinutes());
+        if (mins.length == 1) {
+            mins = "0" + mins;
+        }
+                sec = String(d.getSeconds());
+        if (sec.length == 1) {
+            sec = "0" + sec;
+        }
+        var strDate=year + "-" + month + "-" + day +" "+hour+":"+mins+":"+sec;
+log.info(year + "-" + month + "-" + day +" "+hour+":"+mins+":"+sec);
+//INSERT INTO msc_person (p_uuid, prsn_type, prsn_state, empl_id, last_name, first_name, mi_name, create_dt, create_by, create_proc) values ('rl21212121', 'Pharmacist', 'Intern', 'T5656456', 'Ranasingha', 'Padmini', NULL, '2012-09-23 22:30:00', 'user_padmini', 'mscube j2me mobile app');
+var newUseradding = db.query("INSERT INTO msc_person "
++"(p_uuid, prsn_type, prsn_state, empl_id, last_name, first_name, mi_name, create_dt, create_by, create_proc) "
++"values ('"+pkey+"', '"+type+"', 'Intern', '"+empl_id+"', '"+last_name+"', '"+first_name+"', '"+mi_name+"', '"+strDate+"', 'user_"+first_name+"', 'mscube j2me mobile app'); ");
+
+log.info(pkey + " : "+last_name+" is added to msc_person");
+//INSERT INTO msc_auth_access (user_p_uuid, uname, password, create_dt, create_by, create_proc) values ('rl21212121', 'padmini', 'padminiranasinghe', '2012-09-23 22:30:00', 'user_padmini', 'mscube j2me mobile app');
+
+var newuserAces = db.query("INSERT INTO msc_auth_access "+
+"(user_p_uuid, uname, password, create_dt, create_by, create_proc) "
++"values ('"+acesspkey+"', '"+first_name+"', '"+pass+"', '"+strDate+"', 'user_"+first_name+"', 'mscube j2me mobile app');");
+log.info(acesspkey + " is added to msc_auth_access");
+print(parse("[{\"task\":\"scuess\"}]"));
+}
+
+function getdateNow() {
+    Date.prototype.toYMD = Date_toYMD;
+    function Date_toYMD() {
+        var year, month, day;
+        year = String(this.getFullYear());
+        month = String(this.getMonth() + 1);
+        if (month.length == 1) {
+            month = "0" + month;
+        }
+        day = String(this.getDate());
+        if (day.length == 1) {
+            day = "0" + day;
+        }
+        print (year + "-" + month + "-" + day);
+    }
+}
+%>

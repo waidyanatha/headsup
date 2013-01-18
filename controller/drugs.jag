@@ -1,0 +1,14 @@
+<%
+
+include("../model/drugs.jag");
+var drugs_array = [];
+for(var i in drugs) {
+    if(drugs.hasOwnProperty(i) && !isNaN(+i)) {
+    //	log.info('Drugs init'+i);
+    //	log.info('Drugs init'+drugs.hasOwnProperty(i));
+    	log.info(drugs[i].item_uuid);
+        drugs_array[+i] = drugs[i];
+    }
+}
+%>
+

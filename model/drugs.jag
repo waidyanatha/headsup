@@ -1,0 +1,50 @@
+<%
+include("dbinit.jag");
+var log = new Log();
+log.info('LocationType init');
+var drugs = db.query("SELECT item_uuid, storage_code, item_name,  item_desc FROM msc_item_clog WHERE deactivate_dt IS NULL;");
+
+function getDrugUUID (uuid) {
+	var drugs = db.query("SELECT item_uuid, storage_code, item_name,  item_desc FROM msc_item_clog WHERE deactivate_dt IS NULL;");
+
+  
+}
+
+function saveDrugAudit (scode,uname,hospital,qty) {
+	log.info("saveDrugAudit" +scode+","+uname+","+hospital+","+qty);
+	var hosid = db.query("SELECT fclty_uuid FROM `msc_facility` WHERE `fclty_desc` like '"+hospital+"';");
+	var nameid= db.query("SELECT `user_p_uuid` FROM `msc_auth_access` where`uname` like '"+uname+"';");
+	var storgeid = db.query("SELECT `item_uuid` FROM `msc_item_clog` WHERE `storage_code` LIKE '"+scode+"';");
+log.info(hosid[0].fclty_uuid);
+log.info(nameid[0].user_p_uuid);
+log.info(storgeid[0].item_uuid);
+
+//var lastID = db.query("SELECT fclty_item_audit_uuid FROM msc_fclty_item_audit_log ORDER BY create_dt DESC LIMIT 1;");
+var lastID = db.query("SELECT fclty_item_audit_uuid FROM msc_fclty_item_audit_log ORDER BY create_dt DESC, fclty_item_audit_uuid DESC LIMIT 1;");
+log.info(lastID);
+var arr = lastID[0].fclty_item_audit_uuid.split("-");
+arr[1]=parseInt(arr[1])+1;
+var pkey = arr[0]+"-"+arr[1];
+log.info(pkey);
+/*
+ * 	SELECT fclty_item_audit_uuid FROM msc_fclty_item_audit_log ORDER BY create_dt DESC LIMIT 1
+  	SELECT fclty_uuid FROM `msc_facility` WHERE `fclty_desc` like 'Bihalpola-CD'
+	SELECT `user_p_uuid` FROM `msc_auth_access` where`uname` like 2
+	SELECT `item_uuid` FROM `msc_item_clog` WHERE `storage_code` LIKE 2
+	
+*	insert qur
+	INSERT INTO msc_fclty_item_audit_log (fclty_item_audit_uuid, item_uuid, fclty_uuid, audit_dt, item_qnty, hwork_p_uuid, create_dt, create_by, create_proc) VALUES ('rlfacitemaud-100001', 'rl10003','r7l2faci-1','2012-09-23 00:29:00', 45, 'rl21212121', '2012-09-23 00:29:00', 'rl21212121', 'mscube j2me admin mobile app'); 
+
+ */
+
+include("../model/utilsDate.jag");
+
+  var insterDrugAuit = db.query("INSERT INTO msc_fclty_item_audit_log "
+  +"(fclty_item_audit_uuid, item_uuid, fclty_uuid, audit_dt, item_qnty, hwork_p_uuid, create_dt, create_by, create_proc) VALUES "
+  +"('"+pkey+"', '"+storgeid[0].item_uuid+"','"+hosid[0].fclty_uuid+"','"+strDate+"', "+qty+", '"+nameid[0].user_p_uuid+"', '"+strDate+"', '"+nameid[0].user_p_uuid+"', 'mscube j2me admin mobile app');");
+print(parse("[{\"drugAuiting\":\"scuess\"}]"));
+}
+
+
+
+%>

@@ -1,0 +1,21 @@
+<%
+
+include("../model/case.jag");
+function getCaseStatus(){
+	var casestatus = db.query("SELECT fo.option_description FROM msc_field_options fo WHERE fo.field_name='opt_case_status';");
+	var casestatus_array = [];
+for(var i in casestatus) {
+	
+	
+    if(casestatus.hasOwnProperty(i) && !isNaN(+i)) {
+    //	log.info('localTypes init'+i);
+    //	log.info('localTypes init'+localTypes.hasOwnProperty(i));
+    	log.info(casestatus[i].option_description);
+        casestatus_array[+i] = casestatus[i].option_description;
+    }
+}
+print(casestatus_array);
+}
+
+%>
+

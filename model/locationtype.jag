@@ -1,0 +1,8 @@
+<%
+include("dbinit.jag");
+var log = new Log();
+
+
+
+//SELECT l.loc_uuid, f.fclty_uuid, f.fclty_desc FROM msc_location l INNER JOIN msc_facility f USING (loc_uuid) WHERE l.deactivate_dt IS NULL AND f.deactivate_dt IS NULL AND l.loc_prnt_uuid IN (SELECT loc_uuid FROM msc_location WHERE deactivate_dt IS NULL AND loc_type='PHI' AND loc_name like 'Nakkawatta%');
+%>

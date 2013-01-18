@@ -1,0 +1,38 @@
+<%
+
+var listype = request.getParameter("list");
+var mini = request.getParameter("mini");
+
+include("../controller/disease.jag");
+
+if(listype =="disease"){
+	if(mini !=null){
+		log.info('listDiseases in mini mode');
+	listDiseases(true);
+	}else{
+	log.info('listDiseases');
+	listDiseases();
+	}
+}
+
+if(listype =="symptom"){
+	if(mini !=null){
+		log.info('list symptom in mini mode');
+	listSymptom(true);
+	}else{
+	log.info('list symptom');
+	listSymptom();
+	}
+}
+
+if(listype =="sign"){
+	if(mini !=null){
+		log.info('list sign in mini mode');
+	listSign(true);
+	}else{
+	log.info('listSign');
+	listSign();
+	}
+}
+
+%>

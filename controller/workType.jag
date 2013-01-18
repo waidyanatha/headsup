@@ -1,0 +1,14 @@
+<%
+include("../model/workType.jag");
+
+	var worktype_array = [];
+for(var i in workTypes) {
+	
+	
+    if(workTypes.hasOwnProperty(i) && !isNaN(+i)) {
+    	log.info(workTypes[i].prsn_type);
+        worktype_array[+i] = workTypes[i].prsn_type;
+    }
+}
+print(worktype_array);
+%>

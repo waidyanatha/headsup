@@ -1,0 +1,12 @@
+<%
+include("../model/dbinit.jag");
+var log = new Log();
+
+var query = "SELECT f.fclty_desc AS facility, DATE(c.case_dt) as cdate, c.disease AS disease, COUNT(c.case_uuid) AS counts FROM msc_cases c INNER JOIN msc_facility f USING (fclty_uuid) WHERE c.deactivate_dt IS NULL GROUP BY cdate ORDER BY cdate DESC, disease ASC;";
+log.info('disease counts Model init');
+	var diseaseCount = db.query(query);
+
+print(diseaseCount);
+
+
+%>

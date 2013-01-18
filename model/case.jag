@@ -1,0 +1,6 @@
+<%
+include("dbinit.jag");
+var log = new Log();
+log.info('case init');
+
+%>

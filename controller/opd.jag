@@ -1,0 +1,92 @@
+<%
+
+include("../model/opd.jag");
+include("../model/utilsDate.jag");
+include("tablemgt.jag");
+include("profile.jag");
+include("../model/profile.jag");
+
+function nextID() {
+	log.info('next ID');
+
+	print(getNextID('msc_cases'));
+}
+
+function saveOPD(patientName, gender, ageGroup, disease, sign, symptom, status, uname, hospital, type) {
+	addPatient(patientName, gender, ageGroup); 
+	log.info('save OPD controller for patient ' + patientName + sign);
+		var hosid = db.query("SELECT fclty_uuid FROM `msc_facility` WHERE `fclty_desc` like '"+hospital+"';");
+
+	var nextPK = getNextID('msc_cases')
+	var qury = "INSERT INTO msc_cases " + "(case_uuid, case_alt_id, case_dt, case_yr, case_qtr, case_mo," + " case_dow, hwork_p_uuid, fclty_uuid, loc_uuid, gender, age_grp, " + "disease, dis_dia_dt, dis_onset, notes, mobile_dt, create_dt, create_by, create_proc) values " + "('" + nextPK + "', CONCAT('"+type+"', '-', '" + nextPK + "'), " + "'" + strDate + "', YEAR('" + strDate + "'), CONCAT('Q',QUARTER('" + strDate + "')), " + "CONCAT(LPAD(MONTH('" + strDate + "'),2,0), '-', UPPER(SUBSTR(MONTHNAME('" + strDate + "'),1,3)))," + " CONCAT(LPAD(DAYOFWEEK('" + strDate + "'),2,0), '-' , UPPER(SUBSTR(DAYNAME('" + strDate + "'),1,3)))," + " '"+getUserId(uname)+"', '"+hosid[0].fclty_uuid+"', 'r7l2location-66', '" + gender + "', '" + ageGroup + "', '" + disease + "', " + "NULL, NULL, NULL, '" + strDate + "', '" + strDate + "'," + " '"+getUserId(uname)+"', 'mscube-mob-opd');";
+	db.query(qury);
+
+	saveCaseStatus(nextPK, status);
+	//saveCaseSign(nextPK, status)
+	log.info('sign ' + sign);
+	var signArr = sign.split(",");
+	//log.info('legnth ' + signArr.length);
+	//log.info('legnth 1' + signArr[0]);
+	for(var i = 0; i < signArr.length-1; i++) {
+		log.info(i + ": " + signArr[i]);
+		saveCaseSign(nextPK,signArr[i])
+	}
+	var symptomArr = symptom.split(",");
+	log.info('symptomlegnth ' + symptom.length);
+	//log.info('legnth 1' + signArr[0]);
+	for(var i = 0; i < symptomArr.length-1; i++) {
+		log.info(i + ": " + symptomArr[i]);
+		saveCaseSymt(nextPK,symptomArr[i])
+	}
+	updatePK('msc_cases', nextPK);
+
+	print([{
+		'task' : 'saved as ' + nextPK
+	}]);
+}
+
+//INSERT INTO msc_cases (case_uuid, case_alt_id, case_dt, case_yr, case_qtr, case_mo, case_dow, hwork_p_uuid, fclty_uuid, loc_uuid, gender, age_grp, disease, dis_dia_dt, dis_onset, notes, mobile_dt, create_dt, create_by, create_proc) values ('rl-10003', CONCAT('OPD', '-', 'rl-10002'), '2010-10-01 18:35:00', YEAR('2010-10-01 18:35:00'), CONCAT('Q',QUARTER('2010-10-01 18:35:00')), CONCAT(LPAD(MONTH('2010-10-01 18:35:00'),2,0), '-', UPPER(SUBSTR(MONTHNAME('2010-10-01 18:35:00'),1,3))), CONCAT(LPAD(DAYOFWEEK('2010-10-01 18:35:00'),2,0), '-' , UPPER(SUBSTR(DAYNAME('2010-10-01 18:35:00'),1,3))), 'r7l2person-92', 'r7l2faci-3', 'r7l2location-66', 'male', '46-60', 'dengue', NULL, NULL, NULL, '2012-10-01 18:36:30', '2012-10-01 18:36:40', 'r7l2person-92', 'mscube-mob-opd');
+
+function getNextID() {
+	var lastID = db.query("SELECT pk_id  FROM msc_table_mgt " + "WHERE table_name ='msc_cases';");
+	var arr = lastID[0].pk_id.split("-");
+	arr[1] = parseInt(arr[1]) + 1;
+	var pkey = arr[0] + "-" + arr[1];
+	return pkey;
+}
+
+function saveCaseSymt(caseUuid, symptom) {
+	//var nextPK = getNextID('msc_case_symp')
+	var qury = "INSERT INTO msc_case_symp (case_uuid, symptom) VALUES ('" + caseUuid + "','" + symptom + "');";
+	//updatePK('msc_case_symp', nextPK)
+	db.query(qury);
+
+	print([{
+		'task' : 'saved symptom as ' + caseUuid
+	}]);
+}
+
+function saveCaseSign(caseUuid, sign) {
+	//var nextPK = getNextID('msc_case_sign')
+	var qury = "INSERT INTO msc_case_sign (case_uuid, sign) VALUES ('" + caseUuid + "','" + sign + "');";
+	//updatePK('msc_case_sign', nextPK)
+	db.query(qury);
+
+	print([{
+		'task' : 'saved sign as ' + caseUuid
+	}]);
+}
+
+function saveCaseStatus(caseUuid, status) {
+	var nextPK = getNextID('msc_case_status_log')
+	log.info('saveCaseStatus ' + status);
+	var qury = "INSERT INTO msc_case_status_log (case_uuid, case_status, case_status_dt, create_dt, create_by, create_proc) VALUES ('" + caseUuid + "','" + status + "','" + strDate + "', '" + strDate + "', 'r7l2person-92', 'mscube-mob-opd');";
+	db.query(qury);
+	updatePK('msc_case_status_log', nextPK)
+	print([{
+		'task' : 'saved msc_case_status_log as ' + caseUuid
+	}]);
+	log.info('saveCaseStatus ' + caseUuid + status);
+}
+
+%>

@@ -1,0 +1,8 @@
+<html>
+<p>HeadsUP 1.1 Server Start</p>
+<h2>RESTful API for headsUp</h2>
+<a href="http://192.168.169.1:9763/headsup/view/workType.jag">List WorkTypes</a><br>
+<a href="http://192.168.169.1:9763/headsup/view/profile.jag?action=nextID">getNextId for Profile</a><br>
+<a href="http://127.0.0.1:9763/headsup/view/case.jag">ListCaseStatus</a><br>
+<a href="http://192.168.169.1:9763/headsup/view/workType.jag">List WorkTypes</a><br>
+<html>

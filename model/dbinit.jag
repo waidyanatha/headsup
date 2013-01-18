@@ -1,0 +1,6 @@
+<%
+
+config = {}; 
+        var db = new Database("jdbc:mysql://localhost:3306/mscube1", "root", "root", config); 
+
+%>

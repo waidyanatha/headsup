@@ -1,0 +1,54 @@
+<%
+include("../controller/opd.jag");
+
+var action = request.getParameter("action");
+var uname = request.getParameter("uname");
+var pass = request.getParameter("pass");
+var mname = request.getParameter("mname");
+var date = request.getParameter("date");
+var time = request.getParameter("time");
+var note = request.getParameter("note");
+var type = request.getParameter("type");
+var hospital = request.getParameter("hospital");
+var patientName = request.getParameter("patientName");
+var age = request.getParameter("age");
+var gender = request.getParameter("gender");
+var ageGroup = request.getParameter("ageGroup");
+var disease = request.getParameter("disease");
+var symptom = request.getParameter("symptom");
+var sign = request.getParameter("sign");
+var onsetDate = request.getParameter("onsetDate");
+var status = request.getParameter("status");
+
+
+if(uname != null && pass !=null && action == null){
+	login(uname,pass);
+}else
+if(action !=null){
+if(action == "submit" && patientName != null && gender !=null &&  ageGroup !=null)
+{
+	log.info(patientName+'\'s opd submit call');
+	saveOPD(patientName,gender,ageGroup,disease,sign,symptom,status,uname,hospital,type);
+	
+}
+else if(action == "lastID")
+{
+	log.info('last ID OPD');
+	lastID();
+}
+else if(action == "nextID")
+{
+	log.info('NextID OPD');
+	nextID();
+}
+
+else if(action == "store" && uname != null && emplid !=null && type != null && lname !=null && pass !=null )
+{
+	log.info('store new in msc_person');
+	//http://localhost:9763/mscube/view/profile.jag?uname=Ishara&lname=Sandaruwan&type=Suwacevo&emplid=T918020867V&action=store&pass=1
+	//http://localhost:9763/mscube/view/profile.jag?action=lastID
+	saveNewPerson(uname,lname,emplid,type,mname,pass);
+}
+}
+%>
+

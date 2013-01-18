@@ -1,0 +1,21 @@
+<%
+include("../controller/drugs.jag");
+
+var uuid = request.getParameter("uuid");
+var stCode = request.getParameter("code");
+var quty = request.getParameter("quty");
+var uName = request.getParameter("uName");
+var hospital=request.getParameter("hospital");
+if(uuid != null){
+	
+} else
+if(stCode != null && uName != null && quty != null && hospital != null ){
+	//http://localhost:9763/mscube/view/drugs.jag?code=1&uName=2&quty=37&hospital=Bihalpola-CD
+	saveDrugAudit (stCode,uName,hospital,quty) 
+}else
+ if (stCode == null && uName == null && quty == null && hospital == null && uuid ==null){
+
+print(drugs_array);
+}
+%>
+
